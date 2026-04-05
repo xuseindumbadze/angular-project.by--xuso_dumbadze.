@@ -1,0 +1,77 @@
+
+<section class="products-section">
+  <div class="products-grid">
+
+    @if (!products && !hasError) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading products...</p>
+      </div>
+    }
+
+    @if (hasError) {
+      <div class="error-state">
+        <p>⚠️ Failed to load products. Please try again.</p>
+      </div>
+    }
+
+    @for (product of products; track product._id) {
+      <div class="product-card" [class.out-of-stock]="product.stock === 0">
+
+        <div class="card-image-wrapper">
+          <img class="card-image"
+                [src]="product.thumbnail"
+                [attr.alt]="product.title"
+                [attr.title]="product.title"
+                loading="lazy"
+                width="300"
+                height="225"/>
+          @if (product.price.discountPercentage > 0) {
+            <span class="discount-badge">-{{ product.price.discountPercentage }}%</span>
+          }
+         
+        </div>
+
+        <div class="card-body">
+
+          <span class="category-label">{{ product.category.name }}</span>
+
+          <h3 class="product-title">{{ product.title }}</h3>
+
+          <p class="product-brand">{{ product.brand }}</p>
+
+          <div class="rating">
+            @for (star of getStars(product.rating); track $index) {
+              <span class="star" [class.filled]="star">★</span>
+            }
+            <span class="rating-value">{{ product.rating | number:'1.1-1' }}</span>
+          </div>
+
+          <div class="price-block">
+            @if (product.price.discountPercentage > 0) {
+              <span class="old-price">
+                {{ product.price.beforeDiscount | number:'1.0-0' }} {{ product.price.currency }}
+              </span>
+            }
+            <span class="current-price">
+              {{ product.price.current | number:'1.0-0' }} {{ product.price.currency }}
+            </span>
+          </div>
+
+          <p class="warranty">🛡️ {{ product.warranty }} year garranty</p>
+
+          <button
+            class="stock-btn"
+            [class.in-stock]="product.stock > 0"
+            [class.no-stock]="product.stock === 0"
+            [disabled]="product.stock === 0"
+          >
+            {{ product.stock > 0 ? 'Add to Cart' : 'Out of Stock' }}
+          </button>
+
+        </div>
+      </div>
+    }
+
+  </div>
+</section>

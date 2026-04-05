@@ -1,0 +1,53 @@
+import { inject, Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { tap } from 'rxjs';
+import { SignUpRequest, SignInRequest, AuthResponse, AuthUser } from '../../models/auth.models';
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private http = inject(HttpClient);
+  private router = inject(Router);
+
+  private readonly BASE = 'https://api.everrest.educata.dev/auth';
+  private readonly TOKEN_KEY = 'access_token';
+
+  currentUser = signal<AuthUser | null>(null);
+
+  get token(): string | null {
+    return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  get isLoggedIn(): boolean {
+    return !!this.token;
+  }
+
+  signUp(body: SignUpRequest) {
+    return this.http.post<AuthResponse>(`${this.BASE}/sign_up`, body);
+  }
+
+  signIn(body: SignInRequest) {
+    return this.http.post<AuthResponse>(`${this.BASE}/sign_in`, body).pipe(
+      tap((res) => {
+        localStorage.setItem(this.TOKEN_KEY, res.access_token);
+        this.currentUser.set(res.user);
+      })
+    );
+  }
+
+  signOut() {
+    return this.http.post(`${this.BASE}/sign_out`, {}).pipe(
+      tap(() => {
+        localStorage.removeItem(this.TOKEN_KEY);
+        this.currentUser.set(null);
+        this.router.navigate(['/']);
+      })
+    );
+  }
+
+  getMe() {
+    return this.http.get<AuthUser>(`${this.BASE}`).pipe(
+      tap((user) => this.currentUser.set(user))
+    );
+  }
+}

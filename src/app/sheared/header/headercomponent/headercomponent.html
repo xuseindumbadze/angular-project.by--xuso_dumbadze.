@@ -1,0 +1,100 @@
+<header class="header">
+  <div class="header-inner">
+
+    <!-- LOGO -->
+    <a routerLink="/" class="logo" aria-label="Tech-Zone Home">
+      <span class="logo-main">Tech</span><span class="logo-accent">Zone</span>
+    </a>
+
+    <!-- SEARCH -->
+    <div class="search-wrapper">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          type="search"
+          class="search-input"
+          placeholder="Search products..."
+          [value]="searchQuery"
+          (input)="onSearch($any($event.target).value)"
+          aria-label="Search products"
+          autocomplete="off"
+        />
+        @if (searchQuery) {
+          <button class="clear-btn" (click)="clearSearch()" aria-label="Clear search">✕</button>
+        }
+      </div>
+
+      @if (showResults()) {
+        <div class="search-dropdown" role="listbox">
+          @for (product of searchResults(); track product._id) {
+            <div class="search-item" role="option">
+              <img
+                [src]="product.thumbnail"
+                [attr.alt]="product.title"
+                [attr.title]="product.title"
+                class="search-thumb"
+              />
+              <div class="search-info">
+                <span class="search-title">{{ product.title }}</span>
+                <span class="search-price">{{ product.price.current }} {{ product.price.currency }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- DESKTOP NAV -->
+    <nav class="nav-desktop" aria-label="Main navigation">
+      @if (!auth.isLoggedIn) {
+        <button class="btn-signup" (click)="openSignUp()">Sign up</button>
+        <button class="btn-signin" (click)="openSignIn()">Log in</button>
+      } @else {
+        <div class="user-info">
+          <img
+            [src]="auth.currentUser()?.avatar || 'https://api.dicebear.com/7.x/pixel-art/svg?seed=default'"
+            [attr.alt]="auth.currentUser()?.firstName"
+            [attr.title]="auth.currentUser()?.firstName"
+            class="user-avatar"
+          />
+          <span class="user-name">{{ auth.currentUser()?.firstName }}</span>
+        </div>
+        <button class="btn-signout" (click)="signOut()">Sign out</button>
+      }
+      <button class="burger" (click)="toggleMenu()" aria-label="Toggle menu" [attr.aria-expanded]="menuOpen()">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+
+  </div>
+</header>
+
+<!-- BURGER MENU DRAWER -->
+@if (menuOpen()) {
+  <div class="drawer-overlay" (click)="toggleMenu()"></div>
+  <nav class="drawer" aria-label="Mobile navigation">
+    <button class="drawer-close" (click)="toggleMenu()" aria-label="Close menu">✕</button>
+    <a routerLink="/" class="drawer-link" (click)="toggleMenu()">Home</a>
+    <a routerLink="/shop" class="drawer-link" (click)="toggleMenu()">Shop</a>
+    <div class="drawer-divider"></div>
+    @if (!auth.isLoggedIn) {
+      <button class="drawer-btn signup" (click)="openSignUp()">Sign up</button>
+      <button class="drawer-btn signin" (click)="openSignIn()">Log in</button>
+    } @else {
+      <span class="drawer-user">{{ auth.currentUser()?.firstName }} {{ auth.currentUser()?.lastName }}</span>
+      <button class="drawer-btn signout" (click)="signOut()">Sign out</button>
+    }
+  </nav>
+}
+
+<!-- SIGN IN MODAL -->
+@if (showSignIn()) {
+  <app-signin-modals (close)="closeModals()" (switchToSignUp)="openSignUp()"></app-signin-modals>
+}
+
+<!-- SIGN UP MODAL -->
+@if (showSignUp()) {
+  <app-signup-modals (close)="closeModals()" (switchToSignIn)="openSignIn()"></app-signup-modals>
+}
