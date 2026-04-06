@@ -52,7 +52,7 @@
         <button class="btn-signup" (click)="openSignUp()">Sign up</button>
         <button class="btn-signin" (click)="openSignIn()">Log in</button>
       } @else {
-        <div class="user-info">
+        <div class="user-info" (click)="goToProfile()" style="cursor:pointer">
           <img
             [src]="auth.currentUser()?.avatar || 'https://api.dicebear.com/7.x/pixel-art/svg?seed=default'"
             [attr.alt]="auth.currentUser()?.firstName"

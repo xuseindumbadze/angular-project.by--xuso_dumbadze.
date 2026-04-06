@@ -1,8 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs';
 import { SignUpRequest, SignInRequest, AuthResponse, AuthUser } from '../../models/auth.models';
+import { tap, catchError, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -37,17 +37,26 @@ export class AuthService {
 
   signOut() {
     return this.http.post(`${this.BASE}/sign_out`, {}).pipe(
-      tap(() => {
-        localStorage.removeItem(this.TOKEN_KEY);
-        this.currentUser.set(null);
-        this.router.navigate(['/']);
+      tap({
+        next: () => {
+          localStorage.removeItem(this.TOKEN_KEY);
+          this.currentUser.set(null);
+          this.router.navigate(['/']);
+        },
+        error: () => {
+          // API error-ზეც გავასუფთავოთ
+          localStorage.removeItem(this.TOKEN_KEY);
+          this.currentUser.set(null);
+          this.router.navigate(['/']);
+        }
       })
     );
   }
 
   getMe() {
     return this.http.get<AuthUser>(`${this.BASE}`).pipe(
-      tap((user) => this.currentUser.set(user))
+      tap((user) => this.currentUser.set(user)),
+      catchError(() => of(null))
     );
   }
 }

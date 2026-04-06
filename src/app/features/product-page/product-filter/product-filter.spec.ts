@@ -1,17 +1,17 @@
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { SigninModalsComponent } from '../../modals/signin-modals/signin-modals';
 
-describe('SigninModals', () => {
-  let component: SigninModalsComponent;
-  let fixture: ComponentFixture<SigninModalsComponent>;
+import { ProductFilter } from './product-filter';
+
+describe('ProductFilter', () => {
+  let component: ProductFilter;
+  let fixture: ComponentFixture<ProductFilter>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SigninModalsComponent],
+      imports: [ProductFilter],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SigninModalsComponent);
+    fixture = TestBed.createComponent(ProductFilter);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

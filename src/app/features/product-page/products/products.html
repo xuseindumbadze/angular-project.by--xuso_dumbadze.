@@ -1,21 +1,20 @@
-
 <section class="products-section">
   <div class="products-grid">
 
-    @if (!products && !hasError) {
+    @if (!products().length && !hasError()) {
       <div class="loading">
         <div class="spinner"></div>
         <p>Loading products...</p>
       </div>
     }
 
-    @if (hasError) {
+    @if (hasError()) {
       <div class="error-state">
         <p>⚠️ Failed to load products. Please try again.</p>
       </div>
     }
 
-    @for (product of products; track product._id) {
+    @for (product of products(); track product._id) {
       <div class="product-card" [class.out-of-stock]="product.stock === 0">
 
         <div class="card-image-wrapper">
@@ -29,7 +28,6 @@
           @if (product.price.discountPercentage > 0) {
             <span class="discount-badge">-{{ product.price.discountPercentage }}%</span>
           }
-         
         </div>
 
         <div class="card-body">

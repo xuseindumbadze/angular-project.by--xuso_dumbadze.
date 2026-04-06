@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal, HostListener, ElementRef } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
@@ -18,6 +18,7 @@ import { SignupModalsComponent } from '../../modals/signup-modals/signup-modals'
 export class Headercomponent implements OnInit {
   auth = inject(AuthService);
   searchService = inject(SearchService);
+  router = inject(Router);
   elRef = inject(ElementRef);
 
   searchQuery = '';
@@ -36,8 +37,9 @@ export class Headercomponent implements OnInit {
       distinctUntilChanged(),
       switchMap(q => q.length >= 3 ? this.searchService.search(q) : of(null))
     ).subscribe(res => {
-      this.searchResults.set(res ? res.products : []);
-      this.showResults.set(res ? res.products.length > 0 : false);
+      const products = res ? res.products : [];
+      this.searchResults.set(products);
+      this.showResults.set(products.length > 0);
     });
 
     if (this.auth.token) {
@@ -47,6 +49,9 @@ export class Headercomponent implements OnInit {
 
   onSearch(value: string) {
     this.searchQuery = value;
+    if (value.length < 3) {
+      this.showResults.set(false);
+    }
     this.search$.next(value);
   }
 
@@ -54,6 +59,10 @@ export class Headercomponent implements OnInit {
     this.searchQuery = '';
     this.searchResults.set([]);
     this.showResults.set(false);
+  }
+
+  goToProfile() {
+    this.router.navigate(['/profile']);
   }
 
   signOut() {

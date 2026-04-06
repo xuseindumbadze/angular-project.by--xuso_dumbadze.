@@ -1,8 +1,8 @@
-import { Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { Component, inject, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { Product } from '../../../models/product.modals';
 import { Services } from '../../../core/services/services';
-import { catchError, finalize, of, Subject, takeUntil, tap } from 'rxjs';
+import { catchError, of, Subject, takeUntil, tap } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-products',
@@ -12,27 +12,23 @@ import { catchError, finalize, of, Subject, takeUntil, tap } from 'rxjs';
 })
 export class Products implements OnInit, OnDestroy {
   public getproducts = inject(Services);
-  public platformId = inject(PLATFORM_ID);
-  public products: Product[] | undefined;
-  public hasError: boolean = false;
+  public allProducts = signal<Product[]>([]);
+  public hasError = signal(false);
   public destroyed$ = new Subject();
 
-  ngOnInit(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
+  products = computed(() => this.allProducts());
 
+  ngOnInit(): void {
     this.getproducts
       .productsAll()
       .pipe(
         takeUntil(this.destroyed$),
         tap((data) => {
-          this.products = data.products;
+          this.allProducts.set(data.products);
         }),
         catchError(() => {
-          this.hasError = true;
+          this.hasError.set(true);
           return of('Error');
-        }),
-        finalize(() => {
-          console.log('final');
         })
       )
       .subscribe();
