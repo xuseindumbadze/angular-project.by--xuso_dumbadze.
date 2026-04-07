@@ -1,12 +1,12 @@
 <header class="header">
   <div class="header-inner">
 
-    <!-- LOGO -->
+    
     <a routerLink="/" class="logo" aria-label="Tech-Zone Home">
       <span class="logo-main">Tech</span><span class="logo-accent">Zone</span>
     </a>
 
-    <!-- SEARCH -->
+
     <div class="search-wrapper">
       <div class="search-box">
         <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -46,7 +46,6 @@
       }
     </div>
 
-    <!-- DESKTOP NAV -->
     <nav class="nav-desktop" aria-label="Main navigation">
       @if (!auth.isLoggedIn) {
         <button class="btn-signup" (click)="openSignUp()">Sign up</button>
@@ -71,7 +70,7 @@
   </div>
 </header>
 
-<!-- BURGER MENU DRAWER -->
+
 @if (menuOpen()) {
   <div class="drawer-overlay" (click)="toggleMenu()"></div>
   <nav class="drawer" aria-label="Mobile navigation">
@@ -89,12 +88,11 @@
   </nav>
 }
 
-<!-- SIGN IN MODAL -->
+
 @if (showSignIn()) {
   <app-signin-modals (close)="closeModals()" (switchToSignUp)="openSignUp()"></app-signin-modals>
 }
 
-<!-- SIGN UP MODAL -->
 @if (showSignUp()) {
   <app-signup-modals (close)="closeModals()" (switchToSignIn)="openSignIn()"></app-signup-modals>
 }

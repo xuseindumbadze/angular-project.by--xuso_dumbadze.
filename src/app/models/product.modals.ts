@@ -1,4 +1,4 @@
-// Price - პროდუქტის ფასი
+
 export interface Price {
   current: number;
   currency: string;
@@ -6,14 +6,12 @@ export interface Price {
   discountPercentage: number;
 }
 
-// Category - კატეგორია
 export interface Category {
   id: string;
   name: string;
   image: string;
 }
 
-// Product - მთავარი პროდუქტის მოდელი
 export interface Product {
   _id: string;
   title: string;
@@ -29,7 +27,7 @@ export interface Product {
   category: Category;
 }
 
-// /products/all-ის response
+
 export interface ProductsResponse {
   total: number;
   limit: number;

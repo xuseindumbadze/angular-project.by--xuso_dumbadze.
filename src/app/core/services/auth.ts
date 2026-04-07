@@ -44,7 +44,6 @@ export class AuthService {
           this.router.navigate(['/']);
         },
         error: () => {
-          // API error-ზეც გავასუფთავოთ
           localStorage.removeItem(this.TOKEN_KEY);
           this.currentUser.set(null);
           this.router.navigate(['/']);
