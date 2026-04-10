@@ -1,7 +1,7 @@
 <header class="header">
   <div class="header-inner">
 
-    
+
     <a routerLink="/" class="logo" aria-label="Tech-Zone Home">
       <span class="logo-main">Tech</span><span class="logo-accent">Zone</span>
     </a>
@@ -93,6 +93,4 @@
   <app-signin-modals (close)="closeModals()" (switchToSignUp)="openSignUp()"></app-signin-modals>
 }
 
-@if (showSignUp()) {
-  <app-signup-modals (close)="closeModals()" (switchToSignIn)="openSignIn()"></app-signup-modals>
-}
+
