@@ -93,4 +93,6 @@
   <app-signin-modals (close)="closeModals()" (switchToSignUp)="openSignUp()"></app-signin-modals>
 }
 
-
+@if (showSignUp()) {
+  <app-signup-modals (close)="closeModals()" (switchToSignIn)="openSignIn()"></app-signup-modals>
+}
